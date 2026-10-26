@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Generator</title>
+</head>
+<body>
+
+    <button id="generateBtn">Generate OTP</button>
+    <p id="timer"></p>
+
+    <h3>Generated OTPs</h3>
+    <ul id="otpList"></ul>
+
+    <script>
+        const btn = document.getElementById("generateBtn");
+        const otpList = document.getElementById("otpList");
+        const timer = document.getElementById("timer");
+        function generateOTP() {
+            return String(Math.floor(1000 + Math.random() * 9000));
+        }
+        function startOtpGeneration() {
+            let count = 1;
+            const firstOtp = generateOTP();
+            otpList.innerHTML += `<li>OTP ${count}: ${firstOtp}</li>`;
+            const intervalId = setInterval(() => {
+                count++;
+                const otp = generateOTP();
+                otpList.innerHTML += `<li>OTP ${count}: ${otp}</li>`;
+                if (count === 5) {
+                    clearInterval(intervalId);}
+            }, 3000); 
+        }
+
+        btn.addEventListener("click", () => {
+            btn.disabled = true;
+            startOtpGeneration();
+            let seconds = 10;
+            timer.textContent = `Enables in ${seconds}s`;
+            const countdown = setInterval(() => {
+                seconds--;
+                timer.textContent = `Enables in ${seconds}s`;
+                if (seconds === 0) {
+                    clearInterval(countdown);
+                    btn.disabled = false;
+                    timer.textContent = "";}
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

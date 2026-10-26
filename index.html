@@ -3,48 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f6fa">
     <title>OTP Generator</title>
+    <style>
+        :root {
+            color-scheme: light;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: #20243a;
+            background: #f5f6fa;
+            font-synthesis: none;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-width: 320px;
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            padding: 32px 20px;
+            background:
+                radial-gradient(ellipse at 50% 0%, rgba(111, 91, 232, 0.09), transparent 42%),
+                #f5f6fa;
+        }
+
+        main {
+            width: min(100%, 460px);
+        }
+
+        .intro {
+            margin: 0 0 24px;
+            text-align: center;
+        }
+
+        .eyebrow {
+            margin: 0 0 10px;
+            color: #6b5ce7;
+            font-size: 0.73rem;
+            font-weight: 750;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2rem, 8vw, 2.6rem);
+            letter-spacing: -0.06em;
+        }
+
+        .subtitle {
+            margin: 10px 0 0;
+            color: #74788c;
+            font-size: 0.96rem;
+            line-height: 1.6;
+        }
+
+        .card {
+            overflow: hidden;
+            border: 1px solid #e8e9f1;
+            border-radius: 20px;
+            background: #fff;
+            box-shadow: 0 18px 50px rgba(35, 37, 66, 0.08);
+        }
+
+        .generator {
+            padding: 28px;
+            text-align: center;
+        }
+
+        .code-icon {
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 16px;
+            display: grid;
+            place-items: center;
+            border-radius: 16px;
+            background: #f0edff;
+            color: #6b5ce7;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+        }
+
+        .generator h2,
+        .history h2 {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .generator-copy {
+            margin: 8px 0 20px;
+            color: #85889a;
+            font-size: 0.88rem;
+        }
+
+        button {
+            width: 100%;
+            min-height: 50px;
+            border: 0;
+            border-radius: 12px;
+            background: #6b5ce7;
+            color: #fff;
+            font: inherit;
+            font-size: 0.96rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            background: #5949d4;
+            box-shadow: 0 8px 18px rgba(107, 92, 231, 0.22);
+        }
+
+        button:focus-visible {
+            outline: 3px solid #b8afff;
+            outline-offset: 3px;
+        }
+
+        button:disabled {
+            background: #aaa2ed;
+            cursor: not-allowed;
+        }
+
+        .timer {
+            min-height: 21px;
+            margin: 12px 0 0;
+            color: #74788c;
+            font-size: 0.82rem;
+        }
+
+        .history {
+            padding: 22px 28px 26px;
+            border-top: 1px solid #eeeef4;
+            background: #fdfdff;
+        }
+
+        .history-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .count {
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: #f0edff;
+            color: #6252d5;
+            font-size: 0.73rem;
+            font-weight: 700;
+        }
+
+        .empty-state {
+            margin: 0;
+            padding: 15px;
+            border: 1px dashed #dedfeb;
+            border-radius: 10px;
+            color: #9295a5;
+            font-size: 0.84rem;
+            text-align: center;
+        }
+
+        .otp-list {
+            display: grid;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .otp-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 13px;
+            border: 1px solid #eeeef4;
+            border-radius: 10px;
+            background: #fff;
+            color: #74788c;
+            font-size: 0.84rem;
+        }
+
+        .otp-list strong {
+            color: #292c43;
+            font-size: 1rem;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.13em;
+        }
+
+        @media (max-width: 420px) {
+            .generator {
+                padding: 24px 20px;
+            }
+
+            .history {
+                padding: 20px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
 </head>
 <body>
+    <main>
+        <header class="intro">
+            <p class="eyebrow">Simple &amp; instant</p>
+            <h1>OTP Generator</h1>
+            <p class="subtitle">Generate a fresh one-time password in just one click.</p>
+        </header>
 
-    <button id="generateBtn">Generate OTP</button>
-    <p id="timer"></p>
+        <section class="card" aria-label="OTP generator">
+            <div class="generator">
+                <div class="code-icon" aria-hidden="true">•••</div>
+                <h2>Your next code</h2>
+                <p class="generator-copy">A new 4-digit code is generated every 3 seconds.</p>
+                <button id="generateBtn" type="button">Generate OTP</button>
+                <p class="timer" id="timer" role="status" aria-live="polite"></p>
+            </div>
 
-    <h3>Generated OTPs</h3>
-    <ul id="otpList"></ul>
+            <section class="history" aria-labelledby="historyTitle">
+                <div class="history-heading">
+                    <h2 id="historyTitle">Generated codes</h2>
+                    <span class="count" id="otpCount">0 codes</span>
+                </div>
+                <p class="empty-state" id="emptyState">Your generated codes will appear here.</p>
+                <ul class="otp-list" id="otpList" aria-live="polite" aria-relevant="additions"></ul>
+            </section>
+        </section>
+    </main>
 
     <script>
         const btn = document.getElementById("generateBtn");
         const otpList = document.getElementById("otpList");
         const timer = document.getElementById("timer");
+        const emptyState = document.getElementById("emptyState");
+        const otpCount = document.getElementById("otpCount");
+
         function generateOTP() {
             return String(Math.floor(1000 + Math.random() * 9000));
         }
+
+        function addOTP(count, otp) {
+            const item = document.createElement("li");
+            const label = document.createElement("span");
+            const code = document.createElement("strong");
+            label.textContent = `OTP ${count}`;
+            code.textContent = otp;
+            item.append(label, code);
+            otpList.append(item);
+            emptyState.hidden = true;
+
+            const total = otpList.children.length;
+            otpCount.textContent = `${total} ${total === 1 ? "code" : "codes"}`;
+        }
+
         function startOtpGeneration() {
             let count = 1;
-            const firstOtp = generateOTP();
-            otpList.innerHTML += `<li>OTP ${count}: ${firstOtp}</li>`;
+            addOTP(count, generateOTP());
             const intervalId = setInterval(() => {
                 count++;
-                const otp = generateOTP();
-                otpList.innerHTML += `<li>OTP ${count}: ${otp}</li>`;
+                addOTP(count, generateOTP());
                 if (count === 5) {
-                    clearInterval(intervalId);}
-            }, 3000); 
+                    clearInterval(intervalId);
+                }
+            }, 3000);
         }
 
         btn.addEventListener("click", () => {
             btn.disabled = true;
             startOtpGeneration();
             let seconds = 10;
-            timer.textContent = `Enables in ${seconds}s`;
+            timer.textContent = `You can generate again in ${seconds}s`;
             const countdown = setInterval(() => {
                 seconds--;
-                timer.textContent = `Enables in ${seconds}s`;
+                timer.textContent = `You can generate again in ${seconds}s`;
                 if (seconds === 0) {
                     clearInterval(countdown);
                     btn.disabled = false;
-                    timer.textContent = "";}
+                    timer.textContent = "";
+                }
             }, 1000);
         });
     </script>
